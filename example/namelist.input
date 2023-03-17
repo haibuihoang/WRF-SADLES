@@ -1,0 +1,142 @@
+ &time_control
+ run_days                            = 0,
+ run_hours                           = 0,
+ run_minutes                         = 00,
+ run_seconds                         = 00,
+ start_year                          = 0001, 0001, 0001,
+ start_month                         = 01,   01,   01,
+ start_day                           = 01,   02,   01,
+ start_hour                          = 00,   00,   00,
+ start_minute                        = 00,   00,   00,
+ start_second                        = 00,   00,   00,
+ end_year                            = 0001, 0001, 0001,
+ end_month                           = 01,   01,   01,
+ end_day                             = 02,   02,   01,
+ end_hour                            = 05,   05,   00,
+ end_minute                          = 00,   00,   00,
+ end_second                          = 00,   00,   00,
+ history_interval_m                  = 60,   01,   1,
+ history_interval_s                  = 00,   00,   1,
+ frames_per_outfile                  = 1000, 1000, 1000,
+ restart                             = .false.,
+ restart_interval_m                  = 60,
+ io_form_history                     = 2
+ io_form_restart                     = 2
+ io_form_input                       = 2
+ io_form_boundary                    = 2
+ iofields_filename      = "myoutfields.txt", "myoutfields.txt"
+ /
+
+ &domains
+ time_step                           = 0,
+ time_step_fract_num                 = 5,
+ time_step_fract_den                 = 10,
+ max_dom                             = 2,
+ s_we                                = 1,     1,     1,
+ e_we                                = 322,   322,    151,
+ s_sn                                = 1,     1,     1,
+ e_sn                                = 162,   163,    151,
+ s_vert                              = 1,     1,     1,
+ e_vert                              = 91,   91,    41,
+ dx                                  = 90,   30
+ dy                                  = 90,   30
+ ztop                                = 1600, 1600,  2000,
+ grid_id                             = 1,     2,     3,
+ parent_id                           = 0,     1,     2,
+ i_parent_start                      = 0,     107,    15,
+ j_parent_start                      = 0,     54,    15,
+ parent_grid_ratio                   = 1,     3,     3,
+ parent_time_step_ratio              = 1,     3,     3,
+ feedback                            = 0,
+ smooth_option                       = 0,
+ nproc_x = 32,
+ nproc_y = 16,
+ /
+
+ &physics
+ mp_physics                          = 0,     0,     0,
+ ra_lw_physics                       = 0,     0,     0,
+ ra_sw_physics                       = 0,     0,     0,
+ radt                                = 0,     0,     0,
+ sf_sfclay_physics                   = 1,     1,     1,
+ sf_surface_physics                  = 0,     0,     0,
+ bl_pbl_physics                      = 0,     0,     0,
+ bldt                                = 0,     0,     0,
+ cu_physics                          = 0,     0,     0,
+ cudt                                = 0,     0,     0,
+ isfflx                              = 2,
+ sadles_opt                          = 0,    1,    0,  
+ sadles_startmin                     = 0,    0,    0,  
+ sadles_tkefact                      = 0.5,    
+ windfarm_ij                         = 1,
+ ideal_f                             = 0.0001177, 
+ ideal_znt                             = 0.001, 0.001, 0.001,
+ /
+
+ &fdda
+ /
+
+ &dynamics
+ hybrid_opt                          = 0, 
+ rk_ord                              = 3,
+ diff_opt                            = 2,      2,      2,
+ km_opt                              = 2,      2,      2,
+ damp_opt                            = 0,
+ zdamp                               = 800.,  800.,  5000.,
+ dampcoef                            = 0.2,    0.2,    0.2
+ khdif                               = 1.,      1.,    .05,
+ kvdif                               = 1.,      1.,    .05,
+ c_s                                 = 0.18
+ c_k                                 = 0.10
+ mix_isotropic                       = 1
+ smdiv                               = 0.1,    0.1,    0.1,
+ emdiv                               = 0.01,   0.01,   0.01,
+ epssm                               = 0.1,    0.1,    0.1
+ tke_heat_flux                       = 0.02,   0.02,   0.24,
+ time_step_sound                     = 6,      6,      6,
+ h_mom_adv_order                     = 5,      5,      5,
+ v_mom_adv_order                     = 3,      3,      3,
+ h_sca_adv_order                     = 5,      5,      5,
+ v_sca_adv_order                     = 3,      3,      3,
+ mix_full_fields                     = .true., .true., .true.,
+ non_hydrostatic                     = .true., .true., .true.,
+ pert_coriolis                       = .true., .true., .true.,
+ use_theta_m                         = 1,
+ /
+
+ &bdy_control
+ periodic_x                          = .true., 
+ symmetric_xs                        = .false.,
+ symmetric_xe                        = .false.,
+ open_xs                             = .false.,
+ open_xe                             = .false.,
+ periodic_y                          = .true., 
+ symmetric_ys                        = .false.,
+ symmetric_ye                        = .false.,
+ open_ys                             = .false.,
+ open_ye                             = .false.,
+ /
+
+ &grib2
+ /
+
+ &namelist_quilt
+ nio_tasks_per_group = 0,
+ nio_groups = 1,
+ /
+
+ &ideal
+ ideal_case = 9
+ /
+
+ &cpert
+ cell_pert_xs = 0, 1, 0,
+ cell_pert_xe = 0, 0, 0,
+ cell_pert_ys = 0, 0, 0,
+ cell_pert_ye = 0, 0, 0,
+ cell_pert_interval = 72, 24, 0,
+ cell_pert_magnitude = 0.5,
+ cell_pert_k1 = 20,
+ cell_pert_k2 = 40,
+ /
+

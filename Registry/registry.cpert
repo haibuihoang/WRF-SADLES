@@ -1,0 +1,14 @@
+rconfig   integer     cell_pert              namelist,cpert       max_domains   0      -   "Apply cell perturbation to boundary (24 points): 0=off, 1=on"
+ttom index of transition layer for cell perturbation
+rconfig   integer     cell_pert_xs              namelist,cpert       max_domains   0      -   "Apply cell perturbation to west boundary (24 points): 0=off, 1=on"
+rconfig   integer     cell_pert_xe              namelist,cpert       max_domains   0      -   "Apply cell perturbation to east boundary (24 points): 0=off, 1=on"
+rconfig   integer     cell_pert_ys              namelist,cpert       max_domains   0      -   "Apply cell perturbation to south boundary (24 points): 0=off, 1=on"
+rconfig   integer     cell_pert_ye              namelist,cpert       max_domains   0      -   "Apply cell perturbation to north boundary (24 points): 0=off, 1=on"
+rconfig   integer     cell_pert_interval     namelist,cpert       max_domains   320    -   "Interval to apply the perturbation on the grid point in secondes"
+rconfig   integer     cell_pert_alternate    namelist,cpert       1             0      -   "Alternate the sign of the perturbation: 0=off, 1=on"
+rconfig   real        cell_pert_magnitude    namelist,cpert       1             0.5    -   "Magnitude of the cell perturbation"
+rconfig   integer     cell_pert_k1           namelist,cpert       1             8      -   "Bottom index of transition layer for cell perturbation"
+rconfig   integer     cell_pert_k2           namelist,cpert       1             16     -   "Top index of transition layer for cell perturbation"
+state     real        cell_pert_state         -        misc       -             -      r           "cell_pert_state"            "State of the perturbation pos/neg"         ""
+state     real        cell_pert_th            ikj      misc       1             -      i0rh        "cell_pert_th"               "Potential temperature cell perturbation"      "K"
+
