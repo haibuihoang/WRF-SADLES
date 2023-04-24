@@ -103,7 +103,7 @@ CONTAINS
   real :: C_pow, C_tke
   real, parameter :: rho_std=1.225
   CHARACTER*256 tb_num,input,output,fformat
-  real :: hours
+  real :: hours, ai_fact_temp
   integer :: opt
 
   opt=sadles_opt(id)  ! =1 or 2
@@ -150,9 +150,9 @@ CONTAINS
       ttype = tb_types(itb,id)
       if ( ( ir .le. ipe ) .and.  ( ir .ge. ips ) .and. (jr .le. jpe ) .and. (jr.ge. jps ) ) then
           out_HubSpd(itb,id,i_buffer) = sqrt( u(ir,kr,jr)**2 + v(ir,kr,jr)**2)
+          ai_fact(itb,id)  = Axial_induction(id,itb,out_HubSpd(itb,id,i_buffer))
           if (opt.eq.2) then              
               th_coef(itb,id)  = Thrust_coef(id,itb,out_HubSpd(itb,id,i_buffer),2)             
-              ai_fact(itb,id)  = Axial_induction(id,itb,out_HubSpd(itb,id,i_buffer))
               out_AmbSpd(itb,id,i_buffer) = out_HubSpd(itb,id,i_buffer)/(1-ai_fact(itb,id)) 
               out_Pow(itb,id,i_buffer) = turbine_power(id,itb,out_AmbSpd(itb,id,i_buffer))
               C_pow =  2.*out_Pow(itb,id,i_buffer) /(rho_std*tb_area(ttype)*out_AmbSpd(itb,id,i_buffer)**3 )
@@ -171,7 +171,11 @@ CONTAINS
         ttype = tb_types(itb,id)
         if ( ( ir .le. ipe ) .and.  ( ir .ge. ips ) .and. (jr .le. jpe ) .and. (jr.ge. jps ) ) then
            out_AmbSpd(itb,id,i_buffer) = sqrt( u(ir,kr,jr)**2 + v(ir,kr,jr)**2)
-           ai_fact(itb,id) = ( out_AmbSpd(itb,id,i_buffer)  - out_HubSpd(itb,id,i_buffer) )/ out_AmbSpd(itb,id,i_buffer) 
+           ai_fact_temp = ( out_AmbSpd(itb,id,i_buffer)  - out_HubSpd(itb,id,i_buffer) )/ out_AmbSpd(itb,id,i_buffer)
+           if (ai_fact_temp .le. ai_fact(itb,id)) then
+               ai_fact(itb,id) =  ai_fact_temp
+           end if
+   
            th_coef(itb,id)  = Thrust_coef(id,itb,out_AmbSpd(itb,id,i_buffer),1)
            out_Pow(itb,id,i_buffer) = turbine_power(id,itb,out_AmbSpd(itb,id,i_buffer))
            C_pow =  2.*out_Pow(itb,id,i_buffer) /(rho_std*tb_area(ttype)*out_AmbSpd(itb,id,i_buffer)**3 )
@@ -242,18 +246,19 @@ CONTAINS
       nrad = tb_nradius(ttype)
       ! If turbine is within the current memory tile:
       if ( ( ir-nrad .le. ipe ) .and.  ( ir+nrad .ge. ips ) .and. (jr-nrad .le. jpe ) .and. (jr+nrad.ge. jps ) ) then
-         !write(*,*)"Update tendency for turbine #",itb, th_coef(itb,id) 
+         write(*,*)"Update tendency for turbine #",itb, th_coef(itb,id) 
          !th_coef(itb,id)  
          do ipt=1, sad_npoints(itb,id)
             ii = sad_i(itb,id,ipt)
             kk = sad_k(itb,id,ipt)
             jj = sad_j(itb,id,ipt)
-            !write(*,*) "ii,kk,jj=",ii,kk,jj
-            speed = sqrt( u(ii,kk,jj)**2 + v(ii,kk,jj)**2)
-             
-            ru_tendf(ii,kk,jj) =  ru_tendf(ii,kk,jj) - 0.5*mut(ii,jj)*th_coef(itb,id)*speed* u(ii,kk,jj)*sad_AreaFact(itb,id,ipt) / (1 - ai_fact(itb,id))**2. 
-            rv_tendf(ii,kk,jj) =  rv_tendf(ii,kk,jj) - 0.5*mut(ii,jj)*th_coef(itb,id)*speed* v(ii,kk,jj)*sad_AreaFact(itb,id,ipt) / (1 - ai_fact(itb,id))**2.
-            tke_tend(ii,kk,jj) =  tke_tend(ii,kk,jj) + 0.5*mut(ii,jj)*tke_coef(itb,id)*(speed**3) *sad_AreaFact(itb,id,ipt) / (1 - ai_fact(itb,id))**3.
+            !Only update within the current tile
+            if ( ( ii .le. ipe ) .and.  ( ii .ge. ips ) .and. (jj .le. jpe ) .and. (jj.ge.jps ) ) then
+               speed = sqrt( u(ii,kk,jj)**2 + v(ii,kk,jj)**2)
+               ru_tendf(ii,kk,jj) =  ru_tendf(ii,kk,jj) - 0.5*mut(ii,jj)*th_coef(itb,id)*speed* u(ii,kk,jj)*sad_AreaFact(itb,id,ipt) / (1 - ai_fact(itb,id))**2. 
+               rv_tendf(ii,kk,jj) =  rv_tendf(ii,kk,jj) - 0.5*mut(ii,jj)*th_coef(itb,id)*speed* v(ii,kk,jj)*sad_AreaFact(itb,id,ipt) / (1 - ai_fact(itb,id))**2.
+               tke_tend(ii,kk,jj) =  tke_tend(ii,kk,jj) + 0.5*mut(ii,jj)*tke_coef(itb,id)*(speed**3) *sad_AreaFact(itb,id,ipt) / (1 - ai_fact(itb,id))**3.
+            end if
          end do
       end if
   end do
