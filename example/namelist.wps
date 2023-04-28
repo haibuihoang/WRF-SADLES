@@ -1,0 +1,53 @@
+&share
+ wrf_core = 'ARW',
+ max_dom = 1,
+ start_date='2015-08-14 00:00:00','2015-08-14 00:00:00','2015-08-14 00:00:00','2015-08-14 00:00:00','2015-08-14 00:00:00'
+ end_date='2015-08-15 00:00:00','2015-08-15 00:00:00','2015-08-15 00:00:00','2015-08-15 00:00:00','2015-08-15 00:00:00' 
+ interval_seconds = 3600
+ io_form_geogrid = 2,
+/
+
+&geogrid
+ parent_id         =   1, 1, 2, 3, 4
+ parent_grid_ratio         =   1, 3, 3, 5, 5
+ i_parent_start         =   2, 113, 265, 129, 111
+ j_parent_start         =   2, 97, 68, 129, 115
+ e_we         =   385, 481, 322, 321, 481
+ e_sn         =   321, 382, 322, 321, 481
+ !
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!! IMPORTANT NOTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ ! The default datasets used to produce the HGT_M, GREENFRAC, 
+ ! and LU_INDEX/LANDUSEF fields have changed in WPS v3.8. The HGT_M field
+ ! is now interpolated from 30-arc-second USGS GMTED2010, the GREENFRAC 
+ ! field is interpolated from MODIS FPAR, and the LU_INDEX/LANDUSEF fields 
+ ! are interpolated from 21-class MODIS.
+ !
+ ! To match the output given by the default namelist.wps in WPS v3.7.1, 
+ ! the following setting for geog_data_res may be used:
+ !
+ ! geog_data_res = 'gtopo_10m+usgs_10m+nesdis_greenfrac+10m','gtopo_2m+usgs_2m+nesdis_greenfrac+2m',
+ !
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!! IMPORTANT NOTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !
+ geog_data_res = 'clc_modis_100m+30s','clc_modis_100m+30s','clc_modis_100m+30s','teesside_dem+clc_modis_100m+30s','teesside_dem+clc_modis_100m+30s'
+ dx = 9000.0,
+ dy = 9000.0,
+ map_proj = 'lambert',
+ ref_lat = 56.0,
+ ref_lon = 3.0,
+ truelat1 = 53.0,
+ truelat2 = 59.0,
+ stand_lon = 3.0,
+ geog_data_path = '/cluster/projects/nn9871k/DATA/WPS_GEOG'
+/
+
+&ungrib
+ out_format = 'WPS',
+ prefix = 'ungrib/FILE',
+/
+
+&metgrid
+ fg_name = '../ungrib/FILE','../ungrib/SST','../ungrib/LANDSEA','../ungrib/SEAICE'
+ io_form_metgrid = 2, 
+ opt_output_from_metgrid_path='./metgrid'
+/
