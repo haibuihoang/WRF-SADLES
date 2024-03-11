@@ -100,7 +100,7 @@ CONTAINS
 ! local variables
   integer :: itb, ntb, ttype, ir,jr,kr, sadcom,ierror, ipt, ii,kk,jj
   real ::  nrad,speed
-  real :: C_pow, C_tke
+  real :: C_pow, C_tke, Pow_temp
   real, parameter :: rho_std=1.225
   CHARACTER*256 tb_num,input,output,fformat
   real :: hours, ai_fact_temp
@@ -154,9 +154,16 @@ CONTAINS
           if (opt.eq.2) then              
               th_coef(itb,id)  = Thrust_coef(id,itb,out_HubSpd(itb,id,i_buffer),2)             
               out_AmbSpd(itb,id,i_buffer) = out_HubSpd(itb,id,i_buffer)/(1-ai_fact(itb,id)) 
+
               out_Pow(itb,id,i_buffer) = turbine_power(id,itb,out_AmbSpd(itb,id,i_buffer))
-              C_pow =  2.*out_Pow(itb,id,i_buffer) /(rho_std*tb_area(ttype)*out_AmbSpd(itb,id,i_buffer)**3 )
+              Pow_temp = rho_std*tb_area(ttype)*out_AmbSpd(itb,id,i_buffer)**3/2.
+              C_pow =  out_Pow(itb,id,i_buffer)*1000. / Pow_temp ! It is out_Pow is in KW 
+
               tke_coef(itb,id) = ctke_fact*(th_coef(itb,id) - C_pow)
+
+              !write(*,*) itb,":",out_AmbSpd(itb,id,i_buffer), out_Pow(itb,id,i_buffer), C_pow
+              !write(*,*)"rho,A:",rho_std,tb_area(ttype),C_pow,Pow_temp
+              !write(*,*)"Ct,Cp,Ctke:",th_coef(itb,id),C_pow,tke_coef(itb,id)
           end if
       end if 
   end do
@@ -178,8 +185,11 @@ CONTAINS
    
            th_coef(itb,id)  = Thrust_coef(id,itb,out_AmbSpd(itb,id,i_buffer),1)
            out_Pow(itb,id,i_buffer) = turbine_power(id,itb,out_AmbSpd(itb,id,i_buffer))
-           C_pow =  2.*out_Pow(itb,id,i_buffer) /(rho_std*tb_area(ttype)*out_AmbSpd(itb,id,i_buffer)**3 )
+           Pow_temp = rho_std*tb_area(ttype)*out_AmbSpd(itb,id,i_buffer)**3/2.
+           C_pow =  out_Pow(itb,id,i_buffer)*1000. / Pow_temp ! It is out_Pow is KW
            tke_coef(itb,id) = ctke_fact*(th_coef(itb,id) - C_pow)
+           !write(*,*) itb,":",out_AmbSpd(itb,id,i_buffer), out_Pow(itb,id,i_buffer), C_pow
+           !write(*,*)"Ct,Cp,Ctke:",th_coef(itb,id),C_pow,tke_coef
          end if
       end do 
   end if
@@ -207,7 +217,6 @@ CONTAINS
 
          write(output,"('sadles_AmbSpd.d',i0.2)") id
          OPEN(file=output,unit=foutput,FORM='FORMATTED',STATUS='OLD',POSITION='APPEND',ACTION="WRITE")
-         write(*,*)fformat
          do i_buffer=1,out_buffer
              write(foutput,fformat) out_hours(i_buffer), out_AmbSpd(1:ntb,id,i_buffer)
          enddo  
@@ -215,7 +224,6 @@ CONTAINS
 
          write(output,"('sadles_HubSpd.d',i0.2)") id
          OPEN(file=output,unit=foutput,FORM='FORMATTED',STATUS='OLD',POSITION='APPEND',ACTION="WRITE")
-         write(*,*)fformat
          do i_buffer=1,out_buffer
              write(foutput,fformat) out_hours(i_buffer), out_HubSpd(1:ntb,id,i_buffer)
          enddo
@@ -224,7 +232,6 @@ CONTAINS
          fformat="(f12.7,"//trim(tb_num)//"(f8.2))"
          write(output,"('sadles_Power.d',i0.2)") id
          OPEN(file=output,unit=foutput,FORM='FORMATTED',STATUS='OLD',POSITION='APPEND',ACTION="WRITE")
-         write(*,*)fformat
          do i_buffer=1,out_buffer
              write(foutput,fformat) out_hours(i_buffer), out_Pow(1:ntb,id,i_buffer)
          enddo
@@ -246,7 +253,7 @@ CONTAINS
       nrad = tb_nradius(ttype)
       ! If turbine is within the current memory tile:
       if ( ( ir-nrad .le. ipe ) .and.  ( ir+nrad .ge. ips ) .and. (jr-nrad .le. jpe ) .and. (jr+nrad.ge. jps ) ) then
-         write(*,*)"Update tendency for turbine #",itb, th_coef(itb,id) 
+         !write(*,*)"Update tendency for turbine #",itb, th_coef(itb,id) 
          !th_coef(itb,id)  
          do ipt=1, sad_npoints(itb,id)
             ii = sad_i(itb,id,ipt)
@@ -634,7 +641,7 @@ CONTAINS
 
              read(19,*,ERR=132)tb_hubheight(itype),tb_diameter(itype),tb_sthcoef(itype),tb_npower(itype)
              tb_nradius(itype) = tb_diameter(itype)/dx
-             tb_area(itype) = 3.14159265359*tb_nradius(itype)**2/4. 
+             tb_area(itype) = 3.14159265359*tb_diameter(itype)**2/4. !in m^2
              do k=1,tb_steps(itype)
                  read(19,*,ERR=132) tb_ws(itype,k), tb_thcoef(itype,k), tb_power(itype,k)
                  !Calculate windspeed at AD
@@ -643,7 +650,8 @@ CONTAINS
              enddo
              close (19)
 
-!             write(*,*) "Turbine type#",itype,tb_hubheight(itype),tb_diameter(itype),tb_sthcoef(itype),tb_npower(itype),tb_steps(itype)
+             write(*,*) "Turbine type#",itype,tb_hubheight(itype),tb_diameter(itype),tb_sthcoef(itype),tb_npower(itype),tb_steps(itype)
+             
            end if
        end do
  132   continue
