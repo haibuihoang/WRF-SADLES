@@ -8,11 +8,15 @@ April 2023
 
 WRF-SADLES is the implementation of an Actuator Disk for Large Eddy Simulation in the Weather Research and Forecast Model. The purpose of WRF-SADLES is to simulate the wind turbine wakes explicitly in Large Eddy Simulation (LES) mode. There exist a few implementations of the wake model in WRF, for example, the General Actuator Disk (GAD, Mirocha, 2014). However, we have not found it publicly published. WRF-SADLES also require much less information for easier implementation and carrying out experiments.
 
-If you use WRF-SADLES in your paper, please cite both the SADLES accompanied paper (detail will be updated in WRF-SADLES's [GitHub's repository](https://github.com/haibuihoang/WRF-SADLES) when the paper is published):
 
->  Hai Bui, Mostafa Bakhoday-Paskyabi, and Mohammadreza Mohammadpour-Penchah, 2023: Implementation of a Simple Actuator Disc for Large Eddy Simulation (SADLES) in the Weather Research and Forecasting model. *Submitted to Geoscientific Model Development*.
 
-and the software as indicated in WRF-SADLES's Zenodo record.
+How to cite:
+>  Bui, H., Bakhoday-Paskyabi, M., and Mohammadpour-Penchah, M.: Implementation of a Simple Actuator Disk for Large-Eddy Simulation in the Weather Research and Forecasting Model (WRF-SADLES v1.2) for wind turbine wake simulation, Geosci. Model Dev., 17, 4447–4465, https://doi.org/10.5194/gmd-17-4447-2024, 2024.
+
+If you use WRF-SADLES in your paper, please cite both the SADLES accompanied paper above, and the software as indicated in WRF-SADLES's Zenodo record:
+> Bui, H.: Simple Actuator Disc for Large Eddy Simulation (SADLES), Zenodo [code], https://doi.org/10.5281/zenodo.10803669, 2023.
+
+
 
 ## II. System Requirements
 
