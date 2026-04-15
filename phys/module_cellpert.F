@@ -56,6 +56,7 @@ subroutine gen_th_cpert(config_flags,cell_pert_th, t_2, &
   k2 = config_flags%cell_pert_k2
 
 !First generate the random perturbation
+#ifdef DM_PARALLEL
   IF ( wrf_dm_on_monitor() ) THEN
      Nx_cpert = CEILING((ide-ids+1.)/cpert_size)
      Ny_cpert = CEILING((jde-jds+1.)/cpert_size)
@@ -67,6 +68,12 @@ subroutine gen_th_cpert(config_flags,cell_pert_th, t_2, &
   !write(*,*) "Nx_cpert, Ny_cpert:",Nx_cpert, Ny_cpert
   !write(*,*) "Broadcast cpert.... ",Nx_cpert*k2*Ny_cpert
   CALL wrf_dm_bcast_real(cpert(1:Nx_cpert,1:k2,1:Ny_cpert),Nx_cpert*k2*Ny_cpert)
+#else
+  Nx_cpert = CEILING((ide-ids+1.)/cpert_size)
+  Ny_cpert = CEILING((jde-jds+1.)/cpert_size)
+  call RANDOM_NUMBER(cpert(1:Nx_cpert,1:k2,1:Ny_cpert))      
+  cpert(1:Nx_cpert,1:k2,1:Ny_cpert) = 2*( cpert(1:Nx_cpert,1:k2,1:Ny_cpert) - 0.5) * config_flags%cell_pert_magnitude
+#endif
 
 !Now assign cpert to cell_pert_th
   DO i=ips,ipe

@@ -28,11 +28,18 @@ halo      HALO_EM_NBA_RIJ       dyn_em 8:nba_rij
 period    PERIOD_EM_NBA_RIJ     dyn_em 3:nba_rij
 
 #Hai additional entries for LES 
-rconfig integer  sadles_opt         namelist,physics       max_domains     0       -       "1 to use the simple actuator disc for LES application"
-rconfig integer  sadles_startmin        namelist,physics       max_domains    0       -       "Start after minutes"
+rconfig integer  sadles_opt         namelist,physics       max_domains    0       -       "1 to use the simple actuator disc for LES application"
+rconfig integer  sadles_yawing      namelist,physics       -    0       -       "1: Yaw to face the heading wind"
+rconfig integer  sadles_startmin    namelist,physics       max_domains    0       -       "Start after minutes"
 rconfig real  sadles_maxradius      namelist,physics       -    120       -       "Max turbine radius in meter"
 rconfig real  sadles_mindx          namelist,physics       -    20       -       "Min dx resolution in meter"
 rconfig real  sadles_mindz          namelist,physics       -    20       -       "Min dz resolution in meter"
-rconfig real  sadles_tkefact        namelist,physics       -     0.5       -       "TKE factor"
-rconfig	real  ideal_f    	    namelist,physics       -     0.0001       -       "Idealized coriolis (em_les only)"          
-rconfig	real  ideal_znt    	    namelist,physics       max_domains     -1.0       -       "Idealized roughness length (em_les only)"
+rconfig	real  ideal_f    	        namelist,physics       -     0.0001       -       "Idealized coriolis (em_les only)"          
+rconfig	real  ideal_znt    	        namelist,physics       max_domains     -1.0       -       "Idealized roughness length (em_les only)"
+rconfig integer  geos_nudge_opt     namelist,physics       -     0       -       "Geostrophic Wind nudging option (1=on)"
+rconfig integer  nudge_lev          namelist,physics       -     5       -       "Target vertical level (k-index) to nudge"
+rconfig real     nudge_u            namelist,physics       -     10.     -       "Target u-wind at nudge_lev (m/s)"
+rconfig real     nudge_v            namelist,physics       -     0.      -       "Target v-wind at nudge_lev (m/s)"
+rconfig real     nudge_tau          namelist,physics       -     5400.   -       "Nudging relaxation timescale, tau (s)"
+rconfig real     nudge_tfilter      namelist,physics       -     1200.   -       "Controller update interval (s)"
+rconfig real     nudge_tsmooth      namelist,physics       -     300.   -       "EMA filter timescale for wind signal (s)"

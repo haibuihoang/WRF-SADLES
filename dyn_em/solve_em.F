@@ -79,6 +79,7 @@ SUBROUTINE solve_em ( grid , config_flags  &
    USE module_avgflx_em, ONLY : zero_avgflx, upd_avgflx
    USE module_cpl, ONLY : coupler_on, cpl_settime, cpl_store_input
    USE module_cellpert  !Hai: cell perturbation
+   USE module_sadles, ONLY : geos_nudge 
    IMPLICIT NONE
 
    !  Input data.
@@ -4707,15 +4708,23 @@ BENCH_END(bc_2d_tim)
 
 !Hai
 
-   if (1.eq.do_cell_pert) then
+  if (1.eq.do_cell_pert) then
       CALL gen_th_cpert(config_flags, grid%cell_pert_th, grid%t_2, &
                ids,  ide,  jds,  jde,  kds,  kde,    &
                ims,ime, jms,jme, kms,kme,            &
                ips,ipe,jps,jpe)
 
-   end if
+  end if
 
 
+
+  if ( config_flags%geos_nudge_opt .eq. 1 .AND. grid%id .eq. 1 ) THEN
+    CALL geos_nudge( grid, config_flags  , &
+                      ids, ide, jds, jde, kds, kde,    &
+                      ims, ime, jms, jme, kms, kme,    &
+                      ips, ipe, jps, jpe,              &
+                      grid%dt, grid%u_2, grid%v_2, grid%u_base, grid%v_base  )
+  end if
 
 
 #ifdef DM_PARALLEL

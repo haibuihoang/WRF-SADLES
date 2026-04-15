@@ -281,7 +281,8 @@ solve_em.o:     module_small_step_em.o \
 		../phys/module_microphysics_zero_out.o \
 		../phys/module_physics_addtendc.o \
 		../phys/module_checkerror.o  \
-                ../phys/module_cellpert.o
+                ../phys/module_cellpert.o  \
+                ../phys/module_sadles.o
 
 module_convtrans_prep.o : 
 
@@ -298,7 +299,7 @@ module_first_rk_step_part1.o : \
 		../phys/module_fr_fire_driver_wrf.o \
 		../frame/module_comm_dm.o \
 		../phys/module_fddagd_driver.o \
-                ../phys/module_sadles.o
+        ../phys/module_sadles.o
 
 module_first_rk_step_part2.o : \
                 module_em.o \

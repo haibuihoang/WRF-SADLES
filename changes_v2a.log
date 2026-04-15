@@ -1,0 +1,21 @@
+[Nov 11, 2025] Version 2.0b
+-[x] Experimental: adjust geotrophic wind so that the average wind at the turbine matches the prescribed,for example:
+ geos_nudge_opt                      = 1,
+ nudge_lev                           = 5,
+ nudge_u                             = 10.,
+ nudge_v                             = 0.,
+ nudge_tau       = 5400.0,   ! 90 minutes
+ nudge_tfilter   = 1200.0,   ! 20 minutes
+ nudge_tsmooth   = 300.0,    ! 5 minutes
+
+-[x] Remove option: sadles_tkefact, as shown in the first paper, this does not provide good results
+-[x] Experimental: Add sadles_yawing option, =1, the turbine will automatically yaw towards the incoming wind, this is the default in the previous version; =0, the yaw angle is fix from the windturbines-*.txt (the 3rd column need to be added), thus this enable the wake deflection when the yaw-misalignment occurs.
+    
+-[x] Fix errors while compiling with smpar
+-[x] Add the handling of staggering grids 
+-[x] Change the ways of computing the Powers
+-[x] Remove the TKE tendency
+-[x] Change the method of split the Area in horizontal grids, using analytics method (exact, fast) instead of the Monte-Carlo sampling (slow, approximated)
+
+[Mar 11, 2024] Version 1.2
+-[x] First official release 

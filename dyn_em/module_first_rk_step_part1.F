@@ -1692,16 +1692,14 @@ BENCH_START(sadles_ten_tim)
       IF (config_flags%sadles_opt .ge.1) THEN
         if ( curr_secs > config_flags%sadles_startmin*60. ) then
         !write(*,*)"Check, curr_secs=",curr_secs
-        !write(*,*)"Check, grid%itimestep=",grid%itimestep
-          CALL sadles_yaw(grid%id, grid, grid%dx,     &
-               grid%z_at_w,grid%u_phy,grid%v_phy,   &
-               ims,ime, jms,jme, kms,kme,           &
-               ips,ipe,jps,jpe)
-          CALL sadles_tendency(grid%id,grid, config_flags%sadles_tkefact, &
+          CALL sadles_tendency(grid%id,grid,  grid%dx, grid%z_at_w,  grid%ht,  &
+               config_flags, &
                grid%u_phy,grid%v_phy, grid%mut,   &
-               ru_tendf, rv_tendf, tke_tend,     &
+               ru_tendf, rv_tendf,     &        !
                ims,ime, jms,jme, kms,kme,     &
                ips,ipe,jps,jpe)
+
+
         end if
      END IF
 BENCH_END(sadles_ten_tim)
